@@ -35,6 +35,9 @@ class Garage():
     def lenOpenSpots(self):
         return len(self.open_spots)
 
+    def takenSpaces(self):
+        return [spot for spot in self.spaces.keys() if self.spaces[spot]["status"] == "taken"]
+
     def updateSpots(self):
         self.open_spots = [spot for spot in self.spaces.keys(
         ) if self.spaces[spot]["status"] == "open"]
@@ -42,9 +45,9 @@ class Garage():
     def startMessage(self):
 
         if self.lenOpenSpots() == 0:
-            commands = ["pay", "leave", "quit"]
+            commands = ["pay", "leave", "quit", "come back later"]
             command = input(
-                "***GARAGE FULL*** \n Please type 'Pay', 'Leave', or 'Quit': ").lower()
+                "***GARAGE FULL*** \n Please type 'Pay', 'Leave', 'Come back later', or 'Quit': ").lower()
             if command not in commands:
                 print("Invalid response; try again")
         else:
@@ -52,7 +55,7 @@ class Garage():
             command = input(
                 "***GARAGE OPEN*** \n Please type 'Enter', 'Pay', 'Leave', or 'Quit: ").lower()
             if command not in commands:
-                print("Inavlid response; try again")
+                print("Invalid response; try again")
 
         return command
 
@@ -89,17 +92,48 @@ class Garage():
                 self.spaces[currentTicket]["paid"] = True
                 print("Thank you. Payment complete. You have 15 minutes to leave")
                 self.updateSpots()
-                print(self.listUnpaidTickets())
-                
-
 
     def leaveGarage(self):
-        pass
+        print("Here is a list of all taken spaces: ")
+        for spot in self.takenSpaces():
+            print(f'{spot}: paid: {self.spaces[spot]["paid"]}')
+        ticket = input("Please present your ticket: ").upper()
+        if ticket not in self.takenSpaces():
+            print("Sorry, try again.")
+        else:
+            if self.spaces[ticket]["paid"] == False:
+                commands = ["yes", "no"]
+                command = input("Sorry, that ticket isn't paid. Would you like to pay now? Enter 'Yes' or 'No': ").lower()
+                if command not in commands:
+                    print("Sorry, try again.")
+                elif command == "yes":
+                    self.payForParking()
+                elif command == "no":
+                    print("Okay. But the ticket must be paid before you can exit.")
+            elif self.spaces[ticket]["paid"] == True:
+                self.spaces[ticket]["paid"] = ''
+                self.spaces[ticket]["status"] = "open"
+                self.updateSpots()
+                print("Thank you! Have a nice day.")
+
 
     def runGarage(self):
-        pass
+        
+        while True:
+
+            command = self.startMessage()
+
+            if command == 'quit':
+                print("Sorry to see you go!quit")
+                break
+            if command == "enter":
+                self.takeTicket()
+            if command == "pay":
+                self.payForParking()
+            if command == "leave":
+                self.leaveGarage()
 
 
 user = Garage()
 user.generateGarage()
-user.payForParking()
+user.runGarage()
