@@ -146,12 +146,12 @@ class Garage():
                 self.generateGarage()
 
 
-example = Garage()
+garage = Garage()
 
 # You must call generateGarage() before runGarage(). You will get a randomly generated garage on each 
 # execution of the program. Akin to real life, garages are rarely completely empty when you enter them.
 # It's even possible to generate a completely full garage; and in that case nobody may enter. They may
 # only pay or leave!
 
-example.generateGarage()
-example.runGarage()
+garage.generateGarage()
+garage.runGarage()
