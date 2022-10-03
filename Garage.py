@@ -120,7 +120,7 @@ class Garage():
 
     def payFromLeave(self, ticket):
         commands = ["cash", "card"]
-        command = input("Will you be paying with Cash or Card?: ")
+        command = input("Will you be paying with Cash or Card?: ").lower()
         if command not in commands:
             print("Invalid response; try again.")
         else:
