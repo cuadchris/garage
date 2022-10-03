@@ -1,6 +1,4 @@
 import random
-from re import L
-
 
 class Garage():
 
@@ -11,11 +9,6 @@ class Garage():
     open_spots = []
 
     def generateGarage(self):
-
-        # cars = ["Telsa", "BMW", "Ferrari", "Ford", "Porche", "Honda", "Toyota", "Audi", "Jeep", "Subaru",
-        #         "Cadillac", "Chrysler", "Chevy", "Dodge", "Hyundai", "Mazda", "Nissan", "Lexus", "Acura", "Kia",
-        #         "Volkswagen", "GMC", "Infiniti", "Lincoln", "Pontiac"]
-
         availibility = [["open", "taken"], [True, False]]
 
         for i in self.spots:
@@ -31,19 +24,18 @@ class Garage():
     def showGarage(self):
         for key, value in self.spaces.items():
             print(f'{key}: {value}')
-
+        
     def lenOpenSpots(self):
         return len(self.open_spots)
-
+        
     def takenSpaces(self):
         return [spot for spot in self.spaces.keys() if self.spaces[spot]["status"] == "taken"]
-
+        
     def updateSpots(self):
         self.open_spots = [spot for spot in self.spaces.keys(
         ) if self.spaces[spot]["status"] == "open"]
 
     def startMessage(self):
-
         if self.lenOpenSpots() == 0:
             commands = ["pay", "leave", "quit", "come back later"]
             command = input(
@@ -77,9 +69,9 @@ class Garage():
                 self.updateSpots()
 
     def payForParking(self):
-
         if len(self.listUnpaidTickets()) == 0:
-            print("There are currently no unpaid tickets. Try 'Leave' and present your ticket.")
+            print(
+                "There are currently no unpaid tickets. Try 'Leave' and present your ticket.")
         else:
             print("Here is a list of current unpaid tickets: ")
             for ticket in self.listUnpaidTickets():
@@ -89,7 +81,8 @@ class Garage():
                 print("Invalid response; try again.")
             else:
                 commands = ["cash", "card"]
-                command = input("Will you be paying with Cash or Card?: ")
+                command = input(
+                    "Will you be paying with Cash or Card?: ").lower()
                 if command not in commands:
                     print("Invalid response; try again.")
                 else:
@@ -110,28 +103,38 @@ class Garage():
             else:
                 if self.spaces[ticket]["paid"] == False:
                     commands = ["yes", "no"]
-                    command = input("Sorry, that ticket isn't paid. Would you like to pay now? Enter 'Yes' or 'No': ").lower()
+                    command = input(
+                        "Sorry, that ticket isn't paid. Would you like to pay now? Enter 'Yes' or 'No': ").lower()
                     if command not in commands:
                         print("Sorry, try again.")
                     elif command == "yes":
-                        self.payForParking()
+                        self.payFromLeave(ticket)
                     elif command == "no":
-                        print("Okay. But the ticket must be paid before you can exit.")
+                        print(
+                            "Okay. But the ticket must be paid before you can exit.")
                 elif self.spaces[ticket]["paid"] == True:
                     self.spaces[ticket]["paid"] = ''
                     self.spaces[ticket]["status"] = "open"
                     self.updateSpots()
                     print("Thank you! Have a nice day.")
 
+    def payFromLeave(self, ticket):
+        commands = ["cash", "card"]
+        command = input("Will you be paying with Cash or Card?: ")
+        if command not in commands:
+            print("Invalid response; try again.")
+        else:
+            self.spaces[ticket]["paid"] = True
+            print("Thank you. Payment complete. You have 15 minutes to leave")
+            self.updateSpots()
 
     def runGarage(self):
-        
         while True:
 
             command = self.startMessage()
 
             if command == 'quit':
-                print("Sorry to see you go!quit")
+                print("Sorry to see you go!")
                 break
             elif command == "enter":
                 self.takeTicket()
@@ -143,6 +146,12 @@ class Garage():
                 self.generateGarage()
 
 
-user = Garage()
-# user.generateGarage()
-user.runGarage()
+example = Garage()
+
+# You must call generateGarage() before runGarage(). You will get a randomly generated garage on each 
+# execution of the program. Akin to real life, garages are rarely completely empty when you enter them.
+# It's even possible to generate a completely full garage; and in that case nobody may enter. They may
+# only pay or leave!
+
+example.generateGarage()
+example.runGarage()
